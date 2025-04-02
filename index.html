@@ -97,9 +97,16 @@
       const response = await fetch("RIC.txt");
       const data = await response.text();
 
-      // Dividimos el texto en párrafos por doble salto de línea
+      // Separar por párrafos (doble salto de línea o saltos múltiples)
       const parrafos = data.split(/\n\s*\n/);
-      const coincidencias = parrafos.filter(p => p.toLowerCase().includes(busqueda));
+
+      // Filtrar y resaltar coincidencias
+      const coincidencias = parrafos
+        .filter(p => p.toLowerCase().includes(busqueda))
+        .map(p => {
+          const regex = new RegExp(`(${busqueda})`, "gi");
+          return p.replace(regex, "<mark>$1</mark>");
+        });
 
       if (coincidencias.length === 0) {
         resultados.innerHTML = `❌ No se encontraron resultados para "<strong>${busqueda}</strong>".`;
