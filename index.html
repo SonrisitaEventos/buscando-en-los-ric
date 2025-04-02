@@ -1,244 +1,119 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Buscando los RIC</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visor PDF RIC</title>
+  <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      color: #333;
       margin: 0;
       padding: 0;
+      background: #f4f4f4;
+      color: #333;
     }
     header {
-      background-color: #003366;
+      background: #003366;
       color: white;
       padding: 1rem;
       text-align: center;
     }
-    header h1 {
-      margin: 0;
-      font-size: 2rem;
-    }
-    .subtitulo {
-      font-size: 1rem;
-      margin-top: 0.5rem;
-      font-style: italic;
-    }
     .container {
-      padding: 2rem;
-      max-width: 800px;
+      padding: 1rem;
+      max-width: 1000px;
       margin: auto;
     }
-    .buscador {
-      display: flex;
-      margin-bottom: 2rem;
-    }
-    input[type="text"] {
-      flex-grow: 1;
+    #busqueda {
+      width: 70%;
       padding: 0.5rem;
       font-size: 1rem;
     }
     button {
       padding: 0.5rem 1rem;
+      font-size: 1rem;
       background-color: #0066cc;
       color: white;
       border: none;
       cursor: pointer;
     }
-    #resultados {
-      background: #fff;
-      padding: 1rem;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      white-space: pre-wrap;
+    canvas {
+      display: block;
+      margin: 1rem auto;
+      border: 1px solid #ccc;
     }
-    footer {
-      background-color: #003366;
-      color: white;
-      text-align: center;
-      padding: 1rem;
-      margin-top: 2rem;
-    }
-    .resultado {
-  animation: aparecer 0.5s ease-out forwards;
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-@keyframes aparecer {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-button:hover {
-  transform: scale(1.05);
-  background-color: #005bb5;
-  transition: all 0.3s ease;
-}
-header {
-  background: url("banner tienda.jpg") no-repeat center center/cover;
-  color: white;
-  padding: 4rem 1rem;
-  text-align: center;
-  position: relative;
-}
-
-header::after {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* Oscurece para mejorar lectura */
-}
-
-header h1, .subtitulo {
-  position: relative;
-  z-index: 1;
-}
-
-header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.subtitulo {
-  font-size: 1.2rem;
-  font-style: italic;
-}
-.logo-flotante {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  background-color: rgba(255, 255, 255, 0.6); /* Opcional para destacar el logo */
-  border-radius: 10px;
-  padding: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-.logo-flotante img {
-  height: 120px;
-  max-width: 90vw;
-}
-.logos-encabezado {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
-  padding-top: 1rem;
-}
-
-.logos-encabezado img {
-  height: 80px;
-  max-width: 25vw;
-}
-
-.logos-encabezado h1 {
-  margin: 0;
-  font-size: 2rem;
-  color: white;
-  text-align: center;
-}
-
-.subtitulo {
-  font-size: 1rem;
-  margin-top: 0.5rem;
-  font-style: italic;
-  color: white;
-  text-align: center;
-}
-@media (max-width: 600px) {
-  .logos-encabezado {
-    flex-direction: column;
-  }
-
-  .logos-encabezado img {
-    height: 60px;
-  }
-
-  .logos-encabezado h1 {
-    font-size: 1.5rem;
-  }
-}
-resultados.innerHTML += `<style>
-  #resultados a {
-    color: #0066cc;
-    text-decoration: none;
-    font-weight: bold;
-    margin: 0 4px;
-  }
-  #resultados a:hover {
-    color: #003366;
-    text-decoration: underline;
-  }
-</style>`;
-
   </style>
 </head>
 <body>
- <header>
-    <h1>Buscando en los RIC</h1>
-    <div class="subtitulo">Tu guía práctica para entender la normativa eléctrica chilena</div>
+  <header>
+    <h1>Visor PDF - Buscando en los RIC</h1>
   </header>
   <div class="container">
-    <div class="buscador">
-      <input type="text" id="busqueda" placeholder="Escribe una palabra clave...">
-      <button onclick="buscarTexto()">Buscar</button>
-    </div>
-    <div id="resultados">
-      🔍 Aquí aparecerán los resultados de tu búsqueda en los Pliegos Técnicos del RIC.
-    </div>
+    <input type="text" id="busqueda" placeholder="Buscar en el documento...">
+    <button onclick="buscarTextoEnPDF()">Buscar</button>
+    <div id="resultado-busqueda"></div>
+    <canvas id="visorPDF"></canvas>
   </div>
-  <footer>
-    Creado con cariño por Cristián Riffo – Electricista & Profe apasionado ❤️
-  </footer>
-  <script>
-    async function buscarTexto() {
-      const busqueda = document.getElementById("busqueda").value.toLowerCase();
-      const resultados = document.getElementById("resultados");
 
-      if (!busqueda) {
-        resultados.innerHTML = "Por favor, escribe una palabra clave.";
+  <script>
+    const url = 'RIC_Unificado_01_al_19.pdf';
+    let pdfDoc = null;
+    let paginaActual = 1;
+    let canvas = document.getElementById('visorPDF');
+    let ctx = canvas.getContext('2d');
+
+    pdfjsLib.getDocument(url).promise.then(function (pdf) {
+      pdfDoc = pdf;
+      renderizarPagina(paginaActual);
+    });
+
+    function renderizarPagina(num) {
+      pdfDoc.getPage(num).then(function (page) {
+        const viewport = page.getViewport({ scale: 1.5 });
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        const renderContext = {
+          canvasContext: ctx,
+          viewport: viewport
+        };
+        page.render(renderContext);
+      });
+    }
+
+    function buscarTextoEnPDF() {
+      const termino = document.getElementById("busqueda").value.toLowerCase();
+      document.getElementById("resultado-busqueda").innerText = "Buscando...";
+
+      if (!termino) {
+        alert("Ingresa una palabra clave");
         return;
       }
 
-      resultados.innerHTML = "🔎 Buscando... por favor espera.";
+      let encontrado = false;
+      let paginaEncontrada = -1;
 
-      try {
-        const response = await fetch("RIC_Unificado_01_al_19.html");
-        const html = await response.text();
-
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = html;
-
-        const secciones = tempDiv.querySelectorAll("section");
-        const coincidencias = [];
-
-        secciones.forEach(sec => {
-          const texto = sec.textContent.toLowerCase();
-          if (texto.includes(busqueda)) {
-            const original = sec.innerHTML.replace(new RegExp(`(${busqueda})`, 'gi'), "<mark>$1</mark>");
-            coincidencias.push(`<div style=\"margin-bottom: 1.5rem;\">🔹 ${original}</div>`);
-          }
+      const buscarEnPagina = (num) => {
+        pdfDoc.getPage(num).then(function (page) {
+          page.getTextContent().then(function (textContent) {
+            const texto = textContent.items.map(item => item.str).join(" ").toLowerCase();
+            if (texto.includes(termino)) {
+              encontrado = true;
+              paginaEncontrada = num;
+              renderizarPagina(num);
+              document.getElementById("resultado-busqueda").innerText = `✅ Palabra encontrada en la página ${num}`;
+            } else if (num < pdfDoc.numPages) {
+              buscarEnPagina(num + 1);
+            } else {
+              if (!encontrado) {
+                document.getElementById("resultado-busqueda").innerText = `❌ No se encontró la palabra "${termino}" en el documento.`;
+              }
+            }
+          });
         });
+      };
 
-        if (coincidencias.length === 0) {
-          resultados.innerHTML = `❌ No se encontraron resultados para "<strong>${busqueda}</strong>".`;
-        } else {
-          resultados.innerHTML = `✅ Se encontraron ${coincidencias.length} coincidencias para "<strong>${busqueda}</strong>":<br><br>`;
-          resultados.innerHTML += coincidencias.slice(0, 20).join("");
-          if (coincidencias.length > 20) {
-            resultados.innerHTML += `<em>Mostrando los primeros 20 resultados...</em>`;
-          }
-        }
-      } catch (error) {
-        resultados.innerHTML = `⚠️ Error al cargar el archivo HTML: ${error}`;
-      }
+      buscarEnPagina(1);
     }
   </script>
 </body>
