@@ -181,117 +181,65 @@ resultados.innerHTML += `<style>
   </style>
 </head>
 <body>
-  <header>
-  <div class="logos-encabezado">
-  <img src="logo%20tienda%20sin%20fondo.png" alt="Logo Izquierdo">
-  <h1>Buscando en los RIC</h1>
-  <img src="logo%20tienda%20sin%20fondo.png" alt="Logo Derecho">
-</div>
-<div class="subtitulo">
-  Tu guía práctica para entender la normativa eléctrica chilena
-</div>
+ <header>
+    <h1>Buscando en los RIC</h1>
+    <div class="subtitulo">Tu guía práctica para entender la normativa eléctrica chilena</div>
   </header>
-
   <div class="container">
     <div class="buscador">
-      <input type="text" id="busqueda" placeholder="Escribe una palabra clave..." />
+      <input type="text" id="busqueda" placeholder="Escribe una palabra clave...">
       <button onclick="buscarTexto()">Buscar</button>
     </div>
     <div id="resultados">
       🔍 Aquí aparecerán los resultados de tu búsqueda en los Pliegos Técnicos del RIC.
     </div>
   </div>
-  <audio id="sonidoBusqueda" src="https://www.myinstants.com/media/sounds/bip.mp3"></audio>
-<iframe src="RIC_Unificado_01_al_19.html" width="100%" height="600px" style="border:1px solid #ccc;"></iframe>
-
   <footer>
-    Creado por Cristián Riffo – Electricista & Profe apasionado ❤️
+    Creado con cariño por Cristián Riffo – Electricista & Profe apasionado ❤️
   </footer>
- <script>
-  let resultadosTotales = [];
-  let resultadosPorPagina = 10;
-  let paginaActual = 1;
+  <script>
+    async function buscarTexto() {
+      const busqueda = document.getElementById("busqueda").value.toLowerCase();
+      const resultados = document.getElementById("resultados");
 
-
-  async function buscarTexto() {
-    const busqueda = document.getElementById("busqueda").value.toLowerCase();
-    const resultados = document.getElementById("resultados");
-
-    if (!busqueda) {
-      resultados.innerHTML = "Por favor, escribe una palabra clave.";
-      return;
-    }
-
-    resultados.innerHTML = "🔎 Buscando... por favor espera.";
-
-    try {
-      const response = await fetch("RIC_Unificado_01_al_19.html");
-      const html = await response.text();
-
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = html;
-
-      const secciones = tempDiv.querySelectorAll("section");
-      const coincidencias = [];
-
-      secciones.forEach(sec => {
-        const texto = sec.textContent.toLowerCase();
-        if (texto.includes(busqueda)) {
-          const original = sec.innerHTML.replace(new RegExp(`(${busqueda})`, 'gi'), "<mark>$1</mark>");
-          coincidencias.push(`<div style="margin-bottom: 1.5rem;">🔹 ${original}</div>`);
-        }
-      });
-
-      if (coincidencias.length === 0) {
-        resultados.innerHTML = `❌ No se encontraron resultados para "<strong>${busqueda}</strong>".`;
-      } else {
-        resultados.innerHTML = `✅ Se encontraron ${coincidencias.length} coincidencias para "<strong>${busqueda}</strong>":<br><br>`;
-        resultados.innerHTML += coincidencias.slice(0, 20).join("");
-        if (coincidencias.length > 20) {
-          resultados.innerHTML += `<em>Mostrando los primeros 20 resultados...</em>`;
-        }
+      if (!busqueda) {
+        resultados.innerHTML = "Por favor, escribe una palabra clave.";
+        return;
       }
-    } catch (error) {
-      resultados.innerHTML = `⚠️ Error al cargar el archivo HTML: ${error}`;
-    }
-  }
-  function mostrarPagina(pagina) {
-    const resultados = document.getElementById("resultados");
-    const totalPaginas = Math.ceil(resultadosTotales.length / resultadosPorPagina);
-    paginaActual = pagina;
 
-    if (resultadosTotales.length === 0) {
-      resultados.innerHTML = "❌ No hay resultados para mostrar.";
-      return;
-    }
+      resultados.innerHTML = "🔎 Buscando... por favor espera.";
 
-    const inicio = (pagina - 1) * resultadosPorPagina;
-    const fin = inicio + resultadosPorPagina;
-    const coincidencias = resultadosTotales.slice(inicio, fin);
+      try {
+        const response = await fetch("RIC_Unificado_01_al_19.html");
+        const html = await response.text();
 
-    resultados.innerHTML = `✅ Se encontraron ${resultadosTotales.length} coincidencias:<br><br>`;
-    coincidencias.forEach(parrafo => {
-      resultados.innerHTML += `<div style="margin-bottom:1rem;">🔹 ${parrafo}</div>`;
-    });
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = html;
 
-    // Agregar la paginación
-    resultados.innerHTML += "<div style='margin-top:20px; font-weight: bold;'>Página: ";
-    for (let i = 1; i <= totalPaginas; i++) {
-      if (i === paginaActual) {
-        resultados.innerHTML += ` <span style="color: red;">[${i}]</span> `;
-      } else {
-        resultados.innerHTML += ` <a href="#" onclick="mostrarPagina(${i})">${i}</a> `;
+        const secciones = tempDiv.querySelectorAll("section");
+        const coincidencias = [];
+
+        secciones.forEach(sec => {
+          const texto = sec.textContent.toLowerCase();
+          if (texto.includes(busqueda)) {
+            const original = sec.innerHTML.replace(new RegExp(`(${busqueda})`, 'gi'), "<mark>$1</mark>");
+            coincidencias.push(`<div style=\"margin-bottom: 1.5rem;\">🔹 ${original}</div>`);
+          }
+        });
+
+        if (coincidencias.length === 0) {
+          resultados.innerHTML = `❌ No se encontraron resultados para "<strong>${busqueda}</strong>".`;
+        } else {
+          resultados.innerHTML = `✅ Se encontraron ${coincidencias.length} coincidencias para "<strong>${busqueda}</strong>":<br><br>`;
+          resultados.innerHTML += coincidencias.slice(0, 20).join("");
+          if (coincidencias.length > 20) {
+            resultados.innerHTML += `<em>Mostrando los primeros 20 resultados...</em>`;
+          }
+        }
+      } catch (error) {
+        resultados.innerHTML = `⚠️ Error al cargar el archivo HTML: ${error}`;
       }
     }
-    resultados.innerHTML += "</div>";
-  }
-   if (totalPaginas > 100) {
-  resultados.innerHTML += "<p style='color: orange;'>⚠️ Hay muchos resultados. Prueba con una palabra más específica.</p>";
-}
-document.getElementById("sonidoBusqueda").play();
-
-</script>
-
-
+  </script>
 </body>
 </html>
