@@ -81,7 +81,6 @@
   <footer>
     Creado con cariño por Cristián Riffo – Electricista & Profe apasionado ❤️
   </footer>
-
   <script>
     async function buscarTexto() {
       const busqueda = document.getElementById("busqueda").value.toLowerCase();
@@ -95,7 +94,7 @@
       resultados.innerHTML = "🔎 Buscando resultados, por favor espera...";
 
       try {
-        const response = await fetch("public/RIC_Unificado_01_al_19.txt"); 
+        const response = await fetch("/RIC_Unificado_01_al_19.txt");
         const data = await response.text();
 
         const lineas = data.split("\n");
