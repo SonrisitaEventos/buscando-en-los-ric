@@ -94,27 +94,27 @@
       resultados.innerHTML = "🔎 Buscando resultados, por favor espera...";
 
       try {
-        const response = await fetch("./RIC_Unificado_01_al_19.txt");
-        const data = await response.text();
+  const response = await fetch("./RIC_Unificado_01_al_19.txt");
+  const data = await response.text();
 
-        const lineas = data.split("\n");
-        const coincidencias = lineas.filter(linea => linea.toLowerCase().includes(busqueda));
+  const lineas = data.split("\n");
+  const coincidencias = lineas.filter(linea => linea.toLowerCase().includes(busqueda));
 
-        if (coincidencias.length === 0) {
-          resultados.innerHTML = `❌ No se encontraron resultados para "<strong>${busqueda}</strong>".`;
-        } else {
-          resultados.innerHTML = `✅ Se encontraron ${coincidencias.length} coincidencias para "<strong>${busqueda}</strong>":<br><br>`;
-          coincidencias.slice(0, 20).forEach((linea, i) => {
-            resultados.innerHTML += `<div>🔹 ${linea}</div><br>`;
-          });
-          if (coincidencias.length > 20) {
-            resultados.innerHTML += `<em>Mostrando los primeros 20 resultados...</em>`;
-          }
-        }
-      } catch (error) {
-        resultados.innerHTML = `⚠️ Error al cargar el archivo de texto: ${error}`;
-      }
+  if (coincidencias.length === 0) {
+    resultados.innerHTML = `❌ No se encontraron resultados para "<strong>${busqueda}</strong>".`;
+  } else {
+    resultados.innerHTML = `✅ Se encontraron ${coincidencias.length} coincidencias para "<strong>${busqueda}</strong>":<br><br>`;
+    coincidencias.slice(0, 20).forEach((linea, i) => {
+      resultados.innerHTML += `<div>🔹 ${linea}</div><br>`;
+    });
+    if (coincidencias.length > 20) {
+      resultados.innerHTML += `<em>Mostrando los primeros 20 resultados...</em>`;
     }
+  }
+} catch (error) {
+  resultados.innerHTML = `⚠️ Error al cargar el archivo de texto: ${error}`;
+}
+
   </script>
 </body>
 </html>
