@@ -79,14 +79,44 @@ button:hover {
   background-color: #005bb5;
   transition: all 0.3s ease;
 }
+header {
+  background: url("banner tienda.jpg") no-repeat center center/cover;
+  color: white;
+  padding: 4rem 1rem;
+  text-align: center;
+  position: relative;
+}
+
+header::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Oscurece para mejorar lectura */
+}
+
+header h1, .subtitulo {
+  position: relative;
+  z-index: 1;
+}
+
+header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.subtitulo {
+  font-size: 1.2rem;
+  font-style: italic;
+}
 
   </style>
 </head>
 <body>
   <header>
-    <h1>Buscando en los RIC</h1>
-    <div class="subtitulo">Tu guía práctica para entender la normativa eléctrica chilena</div>
-  </header>
+  <h1>Buscando en los RIC</h1>
+  <div class="subtitulo">Tu guía práctica para entender la normativa eléctrica chilena</div>
+</header>
+
   <div class="container">
     <div class="buscador">
       <input type="text" id="busqueda" placeholder="Escribe una palabra clave..." />
