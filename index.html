@@ -108,6 +108,22 @@ header h1 {
   font-size: 1.2rem;
   font-style: italic;
 }
+.logo-flotante {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  background-color: rgba(255, 255, 255, 0.6); /* Opcional para destacar el logo */
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.logo-flotante img {
+  height: 120px;
+  max-width: 90vw;
+}
 
   </style>
 </head>
@@ -116,6 +132,9 @@ header h1 {
   <h1>Buscando en los RIC</h1>
   <div class="subtitulo">Tu guía práctica para entender la normativa eléctrica chilena</div>
 </header>
+<div class="logo-flotante">
+  <img src="logo%20tienda%20sin%20fondo.png" alt="Logo RyC Soluciones Eléctricas">
+</div>
 
   <div class="container">
     <div class="buscador">
