@@ -152,6 +152,31 @@ header h1 {
   color: white;
   text-align: center;
 }
+@media (max-width: 600px) {
+  .logos-encabezado {
+    flex-direction: column;
+  }
+
+  .logos-encabezado img {
+    height: 60px;
+  }
+
+  .logos-encabezado h1 {
+    font-size: 1.5rem;
+  }
+}
+resultados.innerHTML += `<style>
+  #resultados a {
+    color: #0066cc;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0 4px;
+  }
+  #resultados a:hover {
+    color: #003366;
+    text-decoration: underline;
+  }
+</style>`;
 
   </style>
 </head>
@@ -165,7 +190,7 @@ header h1 {
 <div class="subtitulo">
   Tu guía práctica para entender la normativa eléctrica chilena
 </div>
-
+  </header>header>
 
   <div class="container">
     <div class="buscador">
@@ -176,6 +201,8 @@ header h1 {
       🔍 Aquí aparecerán los resultados de tu búsqueda en los Pliegos Técnicos del RIC.
     </div>
   </div>
+  <audio id="sonidoBusqueda" src="https://www.myinstants.com/media/sounds/bip.mp3"></audio>
+
   <footer>
     Creado por Cristián Riffo – Electricista & Profe apasionado ❤️
   </footer>
@@ -243,6 +270,11 @@ header h1 {
     }
     resultados.innerHTML += "</div>";
   }
+   if (totalPaginas > 100) {
+  resultados.innerHTML += "<p style='color: orange;'>⚠️ Hay muchos resultados. Prueba con una palabra más específica.</p>";
+}
+document.getElementById("sonidoBusqueda").play();
+
 </script>
 
 
