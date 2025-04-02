@@ -124,17 +124,48 @@ header h1 {
   height: 120px;
   max-width: 90vw;
 }
+.logos-encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding-top: 1rem;
+}
+
+.logos-encabezado img {
+  height: 80px;
+  max-width: 25vw;
+}
+
+.logos-encabezado h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: white;
+  text-align: center;
+}
+
+.subtitulo {
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  font-style: italic;
+  color: white;
+  text-align: center;
+}
 
   </style>
 </head>
 <body>
   <header>
+  <div class="logos-encabezado">
+  <img src="logo%20tienda%20sin%20fondo.png" alt="Logo Izquierdo">
   <h1>Buscando en los RIC</h1>
-  <div class="subtitulo">Tu guía práctica para entender la normativa eléctrica chilena</div>
-</header>
-<div class="logo-flotante">
-  <img src="logo%20tienda%20sin%20fondo.png" alt="Logo RyC Soluciones Eléctricas">
+  <img src="logo%20tienda%20sin%20fondo.png" alt="Logo Derecho">
 </div>
+<div class="subtitulo">
+  Tu guía práctica para entender la normativa eléctrica chilena
+</div>
+
 
   <div class="container">
     <div class="buscador">
