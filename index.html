@@ -62,6 +62,24 @@
       padding: 1rem;
       margin-top: 2rem;
     }
+    .resultado {
+  animation: aparecer 0.5s ease-out forwards;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+@keyframes aparecer {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+button:hover {
+  transform: scale(1.05);
+  background-color: #005bb5;
+  transition: all 0.3s ease;
+}
+
   </style>
 </head>
 <body>
@@ -81,10 +99,15 @@
   <footer>
     Creado por Cristián Riffo – Electricista & Profe apasionado ❤️
   </footer>
-  <script>
+ <script>
+  let resultadosTotales = [];
+  let resultadosPorPagina = 10;
+  let paginaActual = 1;
+
   async function buscarTexto() {
     const busqueda = document.getElementById("busqueda").value.toLowerCase();
     const resultados = document.getElementById("resultados");
+    paginaActual = 1;
 
     if (!busqueda) {
       resultados.innerHTML = "Por favor, escribe una palabra clave para buscar.";
@@ -97,33 +120,51 @@
       const response = await fetch("RIC.txt");
       const data = await response.text();
 
-      // Separar por párrafos (doble salto de línea o saltos múltiples)
       const parrafos = data.split(/\n\s*\n/);
+      const regex = new RegExp(`(${busqueda})`, "gi");
 
-      // Filtrar y resaltar coincidencias
-      const coincidencias = parrafos
+      resultadosTotales = parrafos
         .filter(p => p.toLowerCase().includes(busqueda))
-        .map(p => {
-          const regex = new RegExp(`(${busqueda})`, "gi");
-          return p.replace(regex, "<mark>$1</mark>");
-        });
+        .map(p => p.replace(regex, "<mark>$1</mark>"));
 
-      if (coincidencias.length === 0) {
-        resultados.innerHTML = `❌ No se encontraron resultados para "<strong>${busqueda}</strong>".`;
-      } else {
-        resultados.innerHTML = `✅ Se encontraron ${coincidencias.length} coincidencias para "<strong>${busqueda}</strong>":<br><br>`;
-        coincidencias.slice(0, 10).forEach(parrafo => {
-          resultados.innerHTML += `<div style="margin-bottom:1rem;">🔹 ${parrafo}</div>`;
-        });
-        if (coincidencias.length > 10) {
-          resultados.innerHTML += `<em>Mostrando los primeros 10 párrafos con coincidencias...</em>`;
-        }
-      }
+      mostrarPagina(paginaActual);
     } catch (error) {
       resultados.innerHTML = `⚠️ Error al cargar el archivo de texto: ${error}`;
     }
   }
+
+  function mostrarPagina(pagina) {
+    const resultados = document.getElementById("resultados");
+    const totalPaginas = Math.ceil(resultadosTotales.length / resultadosPorPagina);
+    paginaActual = pagina;
+
+    if (resultadosTotales.length === 0) {
+      resultados.innerHTML = "❌ No hay resultados para mostrar.";
+      return;
+    }
+
+    const inicio = (pagina - 1) * resultadosPorPagina;
+    const fin = inicio + resultadosPorPagina;
+    const coincidencias = resultadosTotales.slice(inicio, fin);
+
+    resultados.innerHTML = `✅ Se encontraron ${resultadosTotales.length} coincidencias:<br><br>`;
+    coincidencias.forEach(parrafo => {
+      resultados.innerHTML += `<div style="margin-bottom:1rem;">🔹 ${parrafo}</div>`;
+    });
+
+    // Agregar la paginación
+    resultados.innerHTML += "<div style='margin-top:20px; font-weight: bold;'>Página: ";
+    for (let i = 1; i <= totalPaginas; i++) {
+      if (i === paginaActual) {
+        resultados.innerHTML += ` <span style="color: red;">[${i}]</span> `;
+      } else {
+        resultados.innerHTML += ` <a href="#" onclick="mostrarPagina(${i})">${i}</a> `;
+      }
+    }
+    resultados.innerHTML += "</div>";
+  }
 </script>
+
 
 </body>
 </html>
