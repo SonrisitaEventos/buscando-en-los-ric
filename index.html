@@ -212,51 +212,49 @@ resultados.innerHTML += `<style>
   let resultadosPorPagina = 10;
   let paginaActual = 1;
 
+
   async function buscarTexto() {
-  const busqueda = document.getElementById("busqueda").value.toLowerCase();
-  const resultados = document.getElementById("resultados");
+    const busqueda = document.getElementById("busqueda").value.toLowerCase();
+    const resultados = document.getElementById("resultados");
 
-  if (!busqueda) {
-    resultados.innerHTML = "Por favor, escribe una palabra clave.";
-    return;
-  }
-
-  resultados.innerHTML = "🔎 Buscando...";
-
-  try {
-    const response = await fetch("RIC_Unificado_01_al_19.html");
-    const html = await response.text();
-    
-    // Crear un contenedor oculto temporal para analizar el HTML
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = html;
-    
-    const secciones = tempDiv.querySelectorAll("section");
-    const coincidencias = [];
-
-    secciones.forEach(sec => {
-      const texto = sec.textContent.toLowerCase();
-      if (texto.includes(busqueda)) {
-        const original = sec.innerHTML.replace(new RegExp(`(${busqueda})`, 'gi'), "<mark>$1</mark>");
-        coincidencias.push(`<div style="margin-bottom: 1rem;">🔹 ${original}</div>`);
-      }
-    });
-
-    if (coincidencias.length === 0) {
-      resultados.innerHTML = `❌ No se encontraron resultados para "<strong>${busqueda}</strong>".`;
-    } else {
-      resultados.innerHTML = `✅ Se encontraron ${coincidencias.length} coincidencias:<br><br>`;
-      resultados.innerHTML += coincidencias.slice(0, 20).join("");
-      if (coincidencias.length > 20) {
-        resultados.innerHTML += `<em>Mostrando los primeros 20 resultados...</em>`;
-      }
+    if (!busqueda) {
+      resultados.innerHTML = "Por favor, escribe una palabra clave.";
+      return;
     }
-  } catch (error) {
-    resultados.innerHTML = `⚠️ Error al cargar el archivo HTML: ${error}`;
+
+    resultados.innerHTML = "🔎 Buscando... por favor espera.";
+
+    try {
+      const response = await fetch("RIC_Unificado_01_al_19.html");
+      const html = await response.text();
+
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = html;
+
+      const secciones = tempDiv.querySelectorAll("section");
+      const coincidencias = [];
+
+      secciones.forEach(sec => {
+        const texto = sec.textContent.toLowerCase();
+        if (texto.includes(busqueda)) {
+          const original = sec.innerHTML.replace(new RegExp(`(${busqueda})`, 'gi'), "<mark>$1</mark>");
+          coincidencias.push(`<div style="margin-bottom: 1.5rem;">🔹 ${original}</div>`);
+        }
+      });
+
+      if (coincidencias.length === 0) {
+        resultados.innerHTML = `❌ No se encontraron resultados para "<strong>${busqueda}</strong>".`;
+      } else {
+        resultados.innerHTML = `✅ Se encontraron ${coincidencias.length} coincidencias para "<strong>${busqueda}</strong>":<br><br>`;
+        resultados.innerHTML += coincidencias.slice(0, 20).join("");
+        if (coincidencias.length > 20) {
+          resultados.innerHTML += `<em>Mostrando los primeros 20 resultados...</em>`;
+        }
+      }
+    } catch (error) {
+      resultados.innerHTML = `⚠️ Error al cargar el archivo HTML: ${error}`;
+    }
   }
-}
-
-
   function mostrarPagina(pagina) {
     const resultados = document.getElementById("resultados");
     const totalPaginas = Math.ceil(resultadosTotales.length / resultadosPorPagina);
